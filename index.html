@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="sudo MakeItWork — flood emergency reporting, shelters, alerts and safety guidance for the Brahmaputra basin.">
+<meta name="theme-color" content="#16323D">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232C7A99' d='M12 2C8 7 6 10.5 6 14a6 6 0 0012 0c0-3.5-2-7-6-12z'/%3E%3C/svg%3E">
+<title>sudo MakeItWork — Get Help</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-page:#1C2529;
+    --app-bg:#F3F7F6;
+    --surface:#FFFFFF;
+    --surface-tint:#EAF3F2;
+    --ink:#16323D;
+    --ink-dim:#5C7680;
+    --ink-faint:#96A9AD;
+    --border:#E2ECEA;
+    --sos:#D64545;
+    --sos-dark:#B93636;
+    --blue:#2C7A99;
+    --blue-dim:#DCEBF0;
+    --gold:#DFA034;
+    --gold-dim:#FBF0DA;
+    --success:#3F9169;
+    --success-dim:#E1F1E8;
+    --font-display:'Oswald',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+    --font-bn:'Noto Sans Bengali','Inter',sans-serif;
+    --font-hi:'Noto Sans Devanagari','Inter',sans-serif;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  body{
+    background:var(--bg-page);
+    min-height:100vh;
+    display:flex; justify-content:center;
+    font-family:var(--font-body);
+  }
+  body.lang-hi{ font-family:var(--font-hi); }
+  body.lang-bn, body.lang-as{ font-family:var(--font-bn); }
+
+  .app-shell{
+    width:100%; max-width:480px; min-height:100vh;
+    background:var(--app-bg);
+    display:flex; flex-direction:column;
+    position:relative; overflow:hidden;
+  }
+  @media (min-width:520px){
+    body{ padding:26px 0; }
+    .app-shell{ min-height:calc(100vh - 52px); border-radius:20px; box-shadow:0 24px 60px rgba(0,0,0,.45); }
+  }
+
+  /* ---------- persistent app bar ---------- */
+  .app-bar{
+    height:48px; flex-shrink:0; background:var(--app-bg);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 18px; border-bottom:1px solid var(--border);
+  }
+  .app-bar-brand{ display:flex; align-items:center; gap:7px; }
+  .app-bar-brand .droplet-sm{ width:14px; height:14px; border-radius:50% 50% 50% 0; background:var(--blue); transform:rotate(45deg); flex-shrink:0; }
+  .logotype{ display:flex; align-items:baseline; gap:4px; white-space:nowrap; }
+  .logotype .sudo-part{ font-family:var(--font-mono); color:var(--ink-dim); }
+  .logotype .miw-part{ font-family:var(--font-display); font-weight:700; color:var(--ink); }
+  .app-bar-brand .logotype .sudo-part{ font-size:9.5px; }
+  .app-bar-brand .logotype .miw-part{ font-size:13px; letter-spacing:.2px; }
+  .app-bar-right{ display:flex; align-items:center; gap:10px; position:relative; }
+  .lang-pill{
+    font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--ink);
+    background:var(--surface); border:1.5px solid var(--border); border-radius:8px;
+    padding:5px 9px; cursor:pointer; display:flex; align-items:center; gap:4px;
+  }
+  .lang-menu{
+    position:absolute; top:38px; right:0; background:var(--surface); border:1.5px solid var(--border);
+    border-radius:12px; box-shadow:0 10px 26px rgba(0,0,0,.18); overflow:hidden; z-index:50;
+    display:none; min-width:150px;
+  }
+  .lang-menu.open{ display:block; }
+  .lang-menu-item{
+    padding:11px 14px; font-size:13px; font-weight:600; color:var(--ink); cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .lang-menu-item:hover{ background:var(--surface-tint); }
+  .lang-menu-item .eng{ font-size:10.5px; color:var(--ink-dim); font-weight:400; }
+  .conn-indicator{ display:flex; align-items:center; gap:6px; cursor:pointer; }
+  .conn-dot{ width:8px; height:8px; border-radius:50%; background:var(--success); transition:background .2s; }
+  .conn-dot.offline{ background:var(--gold); }
+  .conn-label{ font-family:var(--font-mono); font-size:9.5px; color:var(--ink-dim); }
+
+  .screens{ flex:1; position:relative; overflow:hidden; }
+  .screen{
+    position:absolute; inset:0; overflow-y:auto;
+    display:none; flex-direction:column;
+    background:var(--app-bg);
+  }
+  .screen.active{ display:flex; animation:slide-in .28s ease; }
+  @keyframes slide-in{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:translateY(0);} }
+
+  /* ---------- shared bits ---------- */
+  .pad{ padding:22px 22px 20px 22px; }
+  .brand-row{ display:flex; align-items:center; gap:9px; margin-bottom:6px; }
+  .brand-row .logotype .sudo-part{ font-size:13px; }
+  .brand-row .logotype .miw-part{ font-size:22px; letter-spacing:.5px; }
+  .droplet{
+    width:26px; height:26px; border-radius:50% 50% 50% 0; background:var(--blue); transform:rotate(45deg);
+    flex-shrink:0;
+  }
+  h1.screen-title{ font-family:var(--font-display); font-size:22px; font-weight:600; color:var(--ink); margin-bottom:6px; }
+  p.screen-sub{ font-size:13.5px; color:var(--ink-dim); line-height:1.5; margin-bottom:22px; }
+
+  .btn{
+    width:100%; padding:16px; border-radius:14px; border:none;
+    font-family:var(--font-body); font-weight:700; font-size:15px;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:transform .1s, filter .15s;
+  }
+  body.lang-hi .btn, body.lang-bn .btn, body.lang-as .btn{ font-family:inherit; }
+  .btn:active{ transform:scale(0.98); }
+  .btn-primary{ background:var(--blue); color:#fff; }
+  .btn-primary:hover{ filter:brightness(1.06); }
+  .btn-ghost{ background:var(--surface); color:var(--ink); border:1.5px solid var(--border); }
+  .btn-sos{ background:var(--sos); color:#fff; }
+  .btn:disabled{ opacity:.45; }
+
+  .field-label{ font-size:12.5px; font-weight:600; color:var(--ink); margin-bottom:8px; display:block; }
+  .input{
+    width:100%; padding:15px 16px; border-radius:12px; border:1.5px solid var(--border);
+    background:var(--surface); font-size:16px; color:var(--ink); font-family:inherit;
+  }
+  .input:focus{ outline:none; border-color:var(--blue); }
+
+  /* ---------- language screen ---------- */
+  .lang-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:6px; }
+  .lang-card{
+    background:var(--surface); border:1.5px solid var(--border); border-radius:14px;
+    padding:20px 14px; text-align:center; cursor:pointer; transition:border-color .15s, background .15s;
+  }
+  .lang-card:hover{ border-color:var(--blue); background:var(--blue-dim); }
+  .lang-card .native{ font-size:19px; font-weight:600; color:var(--ink); }
+  .lang-card .eng{ font-size:11.5px; color:var(--ink-dim); margin-top:3px; }
+
+  /* ---------- login ---------- */
+  .phone-input-row{ display:flex; gap:8px; }
+  .cc{
+    padding:15px 12px; border-radius:12px; border:1.5px solid var(--border); background:var(--surface);
+    font-family:var(--font-mono); font-size:15px; color:var(--ink); flex-shrink:0;
+  }
+  .otp-row{ display:flex; gap:8px; justify-content:space-between; margin-bottom:22px; }
+  .otp-box{
+    width:46px; height:56px; text-align:center; font-size:22px; font-family:var(--font-mono);
+    border-radius:12px; border:1.5px solid var(--border); background:var(--surface); color:var(--ink);
+  }
+  .otp-box:focus{ outline:none; border-color:var(--blue); }
+  .resend{ text-align:center; font-size:12.5px; color:var(--blue); margin-top:16px; cursor:pointer; font-weight:600; }
+  .trust-note{ display:flex; gap:10px; align-items:flex-start; background:var(--surface-tint); border-radius:12px; padding:13px 14px; margin-top:20px; }
+  .trust-note svg{ width:18px; height:18px; flex-shrink:0; color:var(--blue); margin-top:1px; }
+  .trust-note span{ font-size:12px; color:var(--ink-dim); line-height:1.5; }
+
+  /* ---------- header on inner screens ---------- */
+  .top-header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 20px 14px 20px; background:var(--app-bg);
+  }
+  .back-btn{
+    width:36px; height:36px; border-radius:10px; background:var(--surface); border:1.5px solid var(--border);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
+  }
+  .avatar{
+    width:36px; height:36px; border-radius:50%; background:var(--blue); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:600; font-size:14px;
+    cursor:pointer; flex-shrink:0;
+  }
+
+  /* ---------- home ---------- */
+  .greeting{ font-size:13px; color:var(--ink-dim); }
+  .risk-banner{
+    margin:0 20px 16px 20px; border-radius:14px; padding:14px 16px;
+    display:flex; align-items:center; gap:12px;
+    background:var(--gold-dim); border:1.5px solid #F0D9A5;
+  }
+  .risk-banner.critical{ background:#FBE4E1; border-color:#F0B4AC; }
+  .risk-dot{ width:10px; height:10px; border-radius:50%; background:var(--gold); flex-shrink:0; }
+  .risk-banner.critical .risk-dot{ background:var(--sos); animation:pulse 1.6s infinite; }
+  @keyframes pulse{ 0%,100%{ opacity:1;} 50%{ opacity:.4;} }
+  .risk-banner .t1{ font-size:13px; font-weight:700; color:var(--ink); }
+  .risk-banner .t2{ font-size:11.5px; color:var(--ink-dim); }
+
+  .sos-hero{
+    margin:6px 20px 22px 20px; border-radius:20px; padding:26px 22px;
+    background:linear-gradient(150deg,#D64545,#B93636);
+    display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px;
+    cursor:pointer; box-shadow:0 10px 30px rgba(214,69,69,.35);
+  }
+  .sos-ring{
+    width:76px; height:76px; border-radius:50%; background:rgba(255,255,255,.16);
+    display:flex; align-items:center; justify-content:center; position:relative;
+  }
+  .sos-ring::before{
+    content:''; position:absolute; inset:-8px; border-radius:50%; border:2px solid rgba(255,255,255,.35);
+    animation:ring-pulse 2s infinite;
+  }
+  @keyframes ring-pulse{ 0%{ transform:scale(0.9); opacity:1;} 100%{ transform:scale(1.35); opacity:0;} }
+  .sos-ring-inner{ width:56px; height:56px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; }
+  .sos-ring-inner svg{ width:26px; height:26px; color:var(--sos); }
+  .sos-hero .label{ font-family:var(--font-display); font-size:19px; font-weight:700; color:#fff; letter-spacing:.5px; }
+  .sos-hero .sub{ font-size:12px; color:rgba(255,255,255,.85); max-width:220px; }
+
+  .quick-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:0 20px 22px 20px; }
+  .quick-card{
+    background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:15px;
+    cursor:pointer;
+  }
+  .quick-card .qi{ width:34px; height:34px; border-radius:9px; background:var(--surface-tint); display:flex; align-items:center; justify-content:center; margin-bottom:10px; }
+  .quick-card .qi svg{ width:17px; height:17px; color:var(--blue); }
+  .quick-card .qv{ font-family:var(--font-display); font-size:17px; font-weight:600; color:var(--ink); }
+  .quick-card .ql{ font-size:11px; color:var(--ink-dim); margin-top:2px; }
+
+  .section-title{ font-size:13px; font-weight:700; color:var(--ink); margin:0 20px 10px 20px; text-transform:uppercase; letter-spacing:.4px; }
+
+  .alert-mini{
+    margin:0 20px 10px 20px; background:var(--surface); border:1.5px solid var(--border); border-left:4px solid var(--gold);
+    border-radius:10px; padding:12px 14px;
+  }
+  .alert-mini.crit{ border-left-color:var(--sos); }
+  .alert-mini .h{ font-size:12.5px; font-weight:700; color:var(--ink); }
+  .alert-mini .b{ font-size:11.5px; color:var(--ink-dim); margin-top:2px; }
+  .alert-mini .tm{ font-family:var(--font-mono); font-size:10px; color:var(--ink-faint); margin-top:5px; }
+
+  /* ---------- SOS form ---------- */
+  .loc-card{
+    margin:0 20px 20px 20px; background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:16px;
+    display:flex; gap:12px; align-items:center;
+  }
+  .loc-pin{ width:38px; height:38px; border-radius:10px; background:var(--success-dim); display:flex; align-items:center; justify-content:center; flex-shrink:0; position:relative; }
+  .loc-pin svg{ width:19px; height:19px; color:var(--success); }
+  .loc-pin.loading{ background:var(--blue-dim); }
+  .loc-pin.loading svg{ color:var(--blue); animation:pin-pulse 1s infinite; }
+  @keyframes pin-pulse{ 0%,100%{ opacity:1;} 50%{ opacity:.35;} }
+  .loc-pin.error{ background:#FBE4E1; }
+  .loc-pin.error svg{ color:var(--sos); }
+  .loc-text{ min-width:0; }
+  .loc-text .t1{ font-size:13px; font-weight:600; color:var(--ink); }
+  .loc-text .t2{ font-family:var(--font-mono); font-size:10.5px; color:var(--ink-dim); margin-top:2px; }
+  .retry-link{ color:var(--blue); text-decoration:underline; cursor:pointer; }
+
+  .situation-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 20px 20px 20px; }
+  .sit-card{
+    background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:16px 12px;
+    text-align:center; cursor:pointer; transition:border-color .15s, background .15s;
+  }
+  .sit-card svg{ width:24px; height:24px; color:var(--blue); margin-bottom:8px; }
+  .sit-card .st{ font-size:12.5px; font-weight:600; color:var(--ink); }
+  .sit-card.selected{ border-color:var(--sos); background:#FBE4E1; }
+  .sit-card.selected svg{ color:var(--sos); }
+
+  textarea.input{ resize:none; height:78px; font-family:inherit; }
+
+  /* ---------- reports ---------- */
+  .report-card{ margin:0 20px 14px 20px; background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:16px; }
+  .report-top{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; }
+  .report-loc{ font-family:var(--font-display); font-size:15px; font-weight:600; color:var(--ink); }
+  .report-time{ font-family:var(--font-mono); font-size:10.5px; color:var(--ink-faint); margin-top:2px; }
+  .status-pill{ font-size:10px; font-weight:700; padding:4px 9px; border-radius:8px; text-transform:uppercase; letter-spacing:.3px; }
+  .timeline{ display:flex; }
+  .tl-step{ flex:1; display:flex; flex-direction:column; align-items:center; position:relative; }
+  .tl-dot{ width:14px; height:14px; border-radius:50%; background:var(--border); border:2px solid var(--surface); z-index:1; }
+  .tl-dot.done{ background:var(--success); }
+  .tl-dot.current{ background:var(--blue); animation:pulse 1.6s infinite; }
+  .tl-line{ position:absolute; top:6px; left:50%; width:100%; height:2px; background:var(--border); z-index:0; }
+  .tl-step:last-child .tl-line{ display:none; }
+  .tl-line.done{ background:var(--success); }
+  .tl-label{ font-size:9px; color:var(--ink-dim); margin-top:6px; text-align:center; line-height:1.3; }
+
+  /* ---------- shelters ---------- */
+  .shelter-mini{ margin:0 20px 12px 20px; background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:15px; display:flex; gap:12px; }
+  .shelter-img{ width:52px; height:52px; border-radius:10px; background:var(--surface-tint); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .shelter-img svg{ width:24px; height:24px; color:var(--blue); }
+  .shelter-info{ flex:1; min-width:0; }
+  .shelter-info .n{ font-size:13.5px; font-weight:700; color:var(--ink); }
+  .shelter-info .d{ font-size:11.5px; color:var(--ink-dim); margin-top:2px; }
+  .shelter-cap{ display:flex; align-items:center; gap:6px; margin-top:8px; }
+  .cap-dot{ width:7px; height:7px; border-radius:50%; }
+  .shelter-cap span{ font-size:10.5px; font-weight:600; }
+  .dir-btn{
+    align-self:center; width:38px; height:38px; border-radius:10px; background:var(--blue); flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .dir-btn svg{ width:17px; height:17px; color:#fff; }
+
+  /* ---------- profile ---------- */
+  .profile-head{ display:flex; flex-direction:column; align-items:center; padding:10px 20px 24px 20px; }
+  .profile-avatar{ width:74px; height:74px; border-radius:50%; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:26px; font-weight:600; margin-bottom:12px; }
+  .profile-name{ font-family:var(--font-display); font-size:18px; font-weight:600; color:var(--ink); }
+  .profile-phone{ font-family:var(--font-mono); font-size:12px; color:var(--ink-dim); margin-top:3px; }
+  .list-item{
+    margin:0 20px; background:var(--surface); border:1.5px solid var(--border); border-radius:12px;
+    padding:14px 16px; display:flex; align-items:center; gap:12px; margin-bottom:10px; cursor:pointer;
+  }
+  .list-item svg{ width:18px; height:18px; color:var(--blue); flex-shrink:0; }
+  .list-item .lt{ flex:1; font-size:13.5px; font-weight:600; color:var(--ink); }
+  .list-item .lv{ font-size:12px; color:var(--ink-dim); font-family:var(--font-mono); }
+  .contact-row{ display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border); }
+  .contact-row:last-child{ border-bottom:none; }
+  .contact-row .cn{ font-size:13px; font-weight:600; color:var(--ink); }
+  .contact-row .cp{ font-family:var(--font-mono); font-size:11.5px; color:var(--ink-dim); }
+
+  /* ---------- bottom nav ---------- */
+  .bottomnav{
+    height:74px; flex-shrink:0; background:var(--surface); border-top:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-around; padding-bottom:6px;
+  }
+  .nav-btn{
+    display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer;
+    color:var(--ink-faint); font-size:9.5px; font-weight:600; width:56px;
+  }
+  .nav-btn svg{ width:20px; height:20px; }
+  .nav-btn.active{ color:var(--blue); }
+  .nav-sos{
+    width:52px; height:52px; border-radius:50%; background:var(--sos); display:flex; align-items:center; justify-content:center;
+    margin-top:-26px; box-shadow:0 6px 14px rgba(214,69,69,.45); cursor:pointer;
+  }
+  .nav-sos svg{ width:22px; height:22px; color:#fff; }
+
+  .confirm-check{
+    width:74px; height:74px; border-radius:50%; background:var(--success-dim); display:flex; align-items:center; justify-content:center; margin:30px auto 18px auto;
+  }
+  .confirm-check svg{ width:36px; height:36px; color:var(--success); }
+
+  /* ---------- AI chat assistant ---------- */
+  .chat-fab{
+    position:absolute; right:16px; bottom:90px; width:54px; height:54px; border-radius:50%;
+    background:var(--blue); box-shadow:0 8px 22px rgba(44,122,153,.45);
+    display:none; align-items:center; justify-content:center; cursor:pointer; z-index:25;
+    transition:transform .15s;
+  }
+  .chat-fab:active{ transform:scale(0.94); }
+  .chat-fab svg{ width:24px; height:24px; color:#fff; }
+  .chat-fab .spark{ position:absolute; top:-3px; right:-3px; width:16px; height:16px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; }
+  .chat-fab .spark svg{ width:9px; height:9px; color:#fff; }
+
+  .chat-overlay{
+    position:absolute; inset:48px 0 0 0; background:rgba(15,25,30,.45); z-index:60;
+    display:none; align-items:flex-end;
+  }
+  .chat-overlay.open{ display:flex; }
+  .chat-panel{
+    width:100%; height:84%; background:var(--surface); border-radius:20px 20px 0 0;
+    display:flex; flex-direction:column; overflow:hidden;
+    animation:chat-up .25s ease;
+  }
+  @keyframes chat-up{ from{ transform:translateY(30px); opacity:.4;} to{ transform:translateY(0); opacity:1;} }
+  .chat-header{ display:flex; justify-content:space-between; align-items:center; padding:16px 18px; border-bottom:1px solid var(--border); flex-shrink:0; }
+  .chat-header-left{ display:flex; align-items:center; gap:10px; }
+  .chat-header-icon{ width:32px; height:32px; border-radius:9px; background:var(--blue-dim); display:flex; align-items:center; justify-content:center; }
+  .chat-header-icon svg{ width:16px; height:16px; color:var(--blue); }
+  .chat-header-title{ font-family:var(--font-display); font-weight:600; font-size:15px; color:var(--ink); }
+  .chat-close{ width:30px; height:30px; border-radius:8px; background:var(--surface-tint); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
+  .chat-disclaimer{ font-size:10.5px; color:#8A5F10; background:var(--gold-dim); padding:9px 18px; line-height:1.45; flex-shrink:0; }
+  .chat-messages{ flex:1; overflow-y:auto; padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+  .msg{ max-width:82%; padding:10px 13px; border-radius:14px; font-size:13px; line-height:1.5; }
+  .msg.bot{ align-self:flex-start; background:var(--surface-tint); color:var(--ink); border-bottom-left-radius:4px; }
+  .msg.user{ align-self:flex-end; background:var(--blue); color:#fff; border-bottom-right-radius:4px; }
+  .msg.typing{ align-self:flex-start; background:var(--surface-tint); color:var(--ink-dim); font-style:italic; }
+  .chat-quick{ display:flex; flex-wrap:wrap; gap:8px; padding:0 16px 12px 16px; flex-shrink:0; }
+  .chat-chip{ font-size:11.5px; padding:8px 12px; border-radius:20px; background:var(--surface-tint); color:var(--blue); cursor:pointer; border:1px solid var(--border); font-weight:600; }
+  .chat-input-row{ display:flex; gap:8px; padding:12px 14px; border-top:1px solid var(--border); flex-shrink:0; }
+  .chat-input{ flex:1; padding:12px 14px; border-radius:20px; border:1.5px solid var(--border); font-size:13.5px; font-family:inherit; }
+  .chat-input:focus{ outline:none; border-color:var(--blue); }
+  .chat-send{ width:42px; height:42px; border-radius:50%; background:var(--blue); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; border:none; }
+  .chat-send svg{ width:18px; height:18px; color:#fff; }
+  .chat-send:disabled{ opacity:.5; cursor:default; }
+</style>
+</head>
+<body class="lang-en">
+
+<div class="app-shell">
+
+  <div class="app-bar">
+    <div class="app-bar-brand">
+      <div class="droplet-sm"></div>
+      <div class="logotype"><span class="sudo-part">sudo</span><span class="miw-part">MakeItWork</span></div>
+    </div>
+    <div class="app-bar-right">
+      <div class="conn-indicator" id="connIndicator" onclick="toggleConnectivity()" title="Connectivity status">
+        <div class="conn-dot" id="connDot"></div>
+        <span class="conn-label" id="connLabel">Online</span>
+      </div>
+      <div class="lang-pill" onclick="toggleLangMenu()"><span id="langPillText">EN</span> ▾</div>
+      <div class="lang-menu" id="langMenu">
+        <div class="lang-menu-item" onclick="quickSetLang('en')"><span>English</span><span class="eng">EN</span></div>
+        <div class="lang-menu-item" onclick="quickSetLang('as')"><span>অসমীয়া</span><span class="eng">AS</span></div>
+        <div class="lang-menu-item" onclick="quickSetLang('bn')"><span>বাংলা</span><span class="eng">BN</span></div>
+        <div class="lang-menu-item" onclick="quickSetLang('hi')"><span>हिन्दी</span><span class="eng">HI</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screens">
+
+    <!-- LANGUAGE (first run) -->
+    <div class="screen active" id="scr-lang">
+      <div class="pad" style="padding-top:50px;">
+        <div class="brand-row" style="justify-content:center; margin-bottom:26px;">
+          <div class="droplet"></div>
+          <div class="logotype"><span class="sudo-part">sudo</span><span class="miw-part">MakeItWork</span></div>
+        </div>
+        <h1 class="screen-title" style="text-align:center;">Choose your language</h1>
+        <p class="screen-sub" style="text-align:center;">ভাষা বাছক · अपनी भाषा चुनें</p>
+        <div class="lang-grid">
+          <div class="lang-card" onclick="setLang('en')"><div class="native">English</div><div class="eng">English</div></div>
+          <div class="lang-card" onclick="setLang('as')"><div class="native">অসমীয়া</div><div class="eng">Assamese</div></div>
+          <div class="lang-card" onclick="setLang('bn')"><div class="native">বাংলা</div><div class="eng">Bengali</div></div>
+          <div class="lang-card" onclick="setLang('hi')"><div class="native">हिन्दी</div><div class="eng">Hindi</div></div>
+        </div>
+        <p class="screen-sub" style="text-align:center; margin-top:20px; margin-bottom:0;" data-i18n="changeLaterNote">You can change this anytime from the top of the app.</p>
+      </div>
+    </div>
+
+    <!-- LOGIN: PHONE -->
+    <div class="screen" id="scr-phone">
+      <div class="pad" style="padding-top:30px;">
+        <div class="brand-row">
+          <div class="droplet"></div>
+          <div class="logotype"><span class="sudo-part">sudo</span><span class="miw-part">MakeItWork</span></div>
+        </div>
+        <h1 class="screen-title" style="margin-top:26px;" data-i18n="login">Log in to continue</h1>
+        <p class="screen-sub" data-i18n="loginSub">We use your number to verify you and send updates on your report — even if the app can't connect.</p>
+        <label class="field-label" data-i18n="phoneLabel">Phone number</label>
+        <div class="phone-input-row">
+          <span class="cc">+91</span>
+          <input class="input" id="phoneInput" type="tel" placeholder="98765 43210" maxlength="10">
+        </div>
+        <div style="height:22px;"></div>
+        <button class="btn btn-primary" onclick="goto('scr-otp'); startOtp();" data-i18n="sendOtp">Send OTP</button>
+        <div class="trust-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span data-i18n="trustNote">Your number is only used for verification and rescue coordination. It is never shared publicly.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGIN: OTP -->
+    <div class="screen" id="scr-otp">
+      <div class="pad" style="padding-top:30px;">
+        <div class="brand-row">
+          <div class="droplet"></div>
+          <div class="logotype"><span class="sudo-part">sudo</span><span class="miw-part">MakeItWork</span></div>
+        </div>
+        <h1 class="screen-title" style="margin-top:26px;" data-i18n="enterOtp">Enter OTP</h1>
+        <p class="screen-sub" id="otpSentTo">Code sent to +91 XXXXX XXXXX</p>
+        <div class="otp-row">
+          <input class="otp-box" maxlength="1" inputmode="numeric">
+          <input class="otp-box" maxlength="1" inputmode="numeric">
+          <input class="otp-box" maxlength="1" inputmode="numeric">
+          <input class="otp-box" maxlength="1" inputmode="numeric">
+          <input class="otp-box" maxlength="1" inputmode="numeric">
+          <input class="otp-box" maxlength="1" inputmode="numeric">
+        </div>
+        <button class="btn btn-primary" onclick="verifyOtp()" data-i18n="verify">Verify &amp; continue</button>
+        <div class="resend" data-i18n="resend">Resend code</div>
+      </div>
+    </div>
+
+    <!-- HOME -->
+    <div class="screen" id="scr-home">
+      <div class="top-header">
+        <div>
+          <div class="greeting" data-i18n="greeting">Good evening,</div>
+          <div style="font-family:var(--font-display); font-size:18px; font-weight:600; color:var(--ink);" id="homeName">Rupam</div>
+        </div>
+        <div class="avatar" onclick="goto('scr-profile')" id="avatarInit">R</div>
+      </div>
+
+      <div class="risk-banner critical">
+        <div class="risk-dot"></div>
+        <div>
+          <div class="t1" data-i18n="riskCritical">Critical flood risk in your area</div>
+          <div class="t2" data-i18n="riskSub">Barpeta district · river 1.2m above danger mark</div>
+        </div>
+      </div>
+
+      <div class="sos-hero" onclick="goto('scr-sos-1')">
+        <div class="sos-ring"><div class="sos-ring-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M12 9v4m0 4h.01M10.3 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.7 3.86a2 2 0 00-3.4 0z"/></svg></div></div>
+        <div class="label" data-i18n="needHelp">I need help</div>
+        <div class="sub" data-i18n="tapHold">Tap to send your GPS location to rescue teams instantly</div>
+      </div>
+
+      <div class="quick-grid">
+        <div class="quick-card" onclick="goto('scr-shelters')">
+          <div class="qi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg></div>
+          <div class="qv">1.8 km</div>
+          <div class="ql" data-i18n="nearestShelter">Nearest shelter</div>
+        </div>
+        <div class="quick-card" onclick="goto('scr-reports')">
+          <div class="qi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M7.8 3h8.4a2 2 0 012 2v14a2 2 0 01-2 2H7.8a2 2 0 01-2-2V5a2 2 0 012-2z"/></svg></div>
+          <div class="qv">1</div>
+          <div class="ql" data-i18n="activeReport">Active report</div>
+        </div>
+      </div>
+
+      <div class="section-title" data-i18n="alertsHeading">Alerts near you</div>
+      <div class="alert-mini crit">
+        <div class="h" data-i18n="alert1h">River gauge crossed danger mark</div>
+        <div class="b" data-i18n="alert1b">Neamatighat station, +1.4m — evacuate low-lying areas now</div>
+        <div class="tm">10 min ago</div>
+      </div>
+      <div class="alert-mini">
+        <div class="h" data-i18n="alert2h">Heavy rain expected tonight</div>
+        <div class="b" data-i18n="alert2b">IMD forecasts continued rainfall over the next 24 hours</div>
+        <div class="tm">1 hr ago</div>
+      </div>
+      <div style="height:20px;"></div>
+    </div>
+
+    <!-- SOS STEP 1: confirm location + situation -->
+    <div class="screen" id="scr-sos-1">
+      <div class="top-header">
+        <div class="back-btn" onclick="goto('scr-home')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+        <div style="font-family:var(--font-display); font-weight:600; font-size:15px;" data-i18n="sendSos">Send SOS</div>
+        <div style="width:36px;"></div>
+      </div>
+
+      <div class="loc-card">
+        <div class="loc-pin" id="locPinWrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        </div>
+        <div class="loc-text">
+          <div class="t1" id="locStatus">Finding your location…</div>
+          <div class="t2" id="locCoords"></div>
+        </div>
+      </div>
+
+      <div class="section-title" data-i18n="whatsHappening">What's happening?</div>
+      <div class="situation-grid">
+        <div class="sit-card" data-sit="water" onclick="selectSituation(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/><path d="M2 18c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/></svg>
+          <div class="st" data-i18n="sitWater">Trapped by water</div>
+        </div>
+        <div class="sit-card" data-sit="evac" onclick="selectSituation(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 5v14M5 12h16M5 12l4-4M5 12l4 4"/></svg>
+          <div class="st" data-i18n="sitEvac">Need evacuation</div>
+        </div>
+        <div class="sit-card" data-sit="injured" onclick="selectSituation(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6M12 16v6M2 12h6M16 12h6"/></svg>
+          <div class="st" data-i18n="sitInjured">Injured</div>
+        </div>
+        <div class="sit-card" data-sit="supplies" onclick="selectSituation(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-3V6a4 4 0 00-8 0v1H6a1 1 0 00-1 1l1 12h12l1-12a1 1 0 00-1-1z"/></svg>
+          <div class="st" data-i18n="sitSupplies">Need supplies</div>
+        </div>
+      </div>
+
+      <div class="pad" style="padding-top:0;">
+        <label class="field-label" data-i18n="noteLabel">Add a note (optional)</label>
+        <textarea class="input" id="sosNote" placeholder="Number of people, any injuries, landmark nearby..."></textarea>
+        <div style="height:18px;"></div>
+        <button class="btn btn-sos" onclick="sendSosNow();" data-i18n="confirmSend">Confirm &amp; send SOS</button>
+        <div class="trust-note" id="offlineNote" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0119 12.55M5 12.55a10.94 10.94 0 015.17-2.39M10.71 5.05A16 16 0 0122.58 9M1.42 9a15.91 15.91 0 014.7-2.88M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>
+          <span data-i18n="offlineNoteText">No internet connection detected. Your SOS will be sent automatically by SMS to the nearest tower, including your GPS coordinates.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOS CONFIRM -->
+    <div class="screen" id="scr-sos-confirm">
+      <div class="pad" style="padding-top:20px; align-items:center; text-align:center;">
+        <div class="confirm-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h1 class="screen-title" data-i18n="sosSentTitle">Your SOS has been sent</h1>
+        <p class="screen-sub" id="sosSentSub" data-i18n="sosSentSub">Rescue command has received your location. You'll get updates here as your report is verified and a team is assigned.</p>
+        <button class="btn btn-primary" onclick="goto('scr-reports')" data-i18n="trackStatus">Track status</button>
+        <div style="height:12px;"></div>
+        <button class="btn btn-ghost" onclick="goto('scr-home')" data-i18n="backHome">Back to home</button>
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="screen" id="scr-reports">
+      <div class="top-header">
+        <div style="font-family:var(--font-display); font-weight:600; font-size:19px; color:var(--ink);" data-i18n="myReports">My Reports</div>
+        <div style="width:36px;"></div>
+      </div>
+
+      <div class="report-card" id="newReportCard" style="display:none;">
+        <div class="report-top">
+          <div><div class="report-loc" id="newReportLoc">Your location</div><div class="report-time" data-i18n="justNow">Just now</div></div>
+          <div class="status-pill" style="background:var(--blue-dim); color:var(--blue);" data-i18n="statusSent">SENT</div>
+        </div>
+        <div class="timeline">
+          <div class="tl-step"><div class="tl-dot current"></div><div class="tl-line"></div><div class="tl-label" data-i18n="tlSent">Sent</div></div>
+          <div class="tl-step"><div class="tl-dot"></div><div class="tl-line"></div><div class="tl-label" data-i18n="tlReceived">Received</div></div>
+          <div class="tl-step"><div class="tl-dot"></div><div class="tl-line"></div><div class="tl-label" data-i18n="tlVerified">Verified</div></div>
+          <div class="tl-step"><div class="tl-dot"></div><div class="tl-line"></div><div class="tl-label" data-i18n="tlDispatched">Team sent</div></div>
+          <div class="tl-step"><div class="tl-dot"></div><div class="tl-label" data-i18n="tlResolved">Resolved</div></div>
+        </div>
+      </div>
+
+      <div class="report-card">
+        <div class="report-top">
+          <div><div class="report-loc">Kachari Basti, Barpeta</div><div class="report-time">Yesterday, 6:40 PM</div></div>
+          <div class="status-pill" style="background:var(--success-dim); color:var(--success);" data-i18n="statusResolved">RESOLVED</div>
+        </div>
+        <div class="timeline">
+          <div class="tl-step"><div class="tl-dot done"></div><div class="tl-line done"></div><div class="tl-label" data-i18n="tlSent">Sent</div></div>
+          <div class="tl-step"><div class="tl-dot done"></div><div class="tl-line done"></div><div class="tl-label" data-i18n="tlReceived">Received</div></div>
+          <div class="tl-step"><div class="tl-dot done"></div><div class="tl-line done"></div><div class="tl-label" data-i18n="tlVerified">Verified</div></div>
+          <div class="tl-step"><div class="tl-dot done"></div><div class="tl-line done"></div><div class="tl-label" data-i18n="tlDispatched">Team sent</div></div>
+          <div class="tl-step"><div class="tl-dot done"></div><div class="tl-label" data-i18n="tlResolved">Resolved</div></div>
+        </div>
+      </div>
+      <div style="height:20px;"></div>
+    </div>
+
+    <!-- SHELTERS -->
+    <div class="screen" id="scr-shelters">
+      <div class="top-header">
+        <div style="font-family:var(--font-display); font-weight:600; font-size:19px; color:var(--ink);" data-i18n="nearbyShelters">Nearby Shelters</div>
+        <div style="width:36px;"></div>
+      </div>
+
+      <div class="shelter-mini">
+        <div class="shelter-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg></div>
+        <div class="shelter-info">
+          <div class="n">Barpeta Town Camp</div>
+          <div class="d">1.8 km · <span data-i18n="walk">22 min walk</span></div>
+          <div class="shelter-cap"><span class="cap-dot" style="background:var(--gold);"></span><span style="color:var(--gold);" data-i18n="nearFull">Near capacity</span></div>
+        </div>
+        <div class="dir-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></div>
+      </div>
+      <div class="shelter-mini">
+        <div class="shelter-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg></div>
+        <div class="shelter-info">
+          <div class="n">Sarthebari Community Hall</div>
+          <div class="d">2.4 km · <span data-i18n="walk2">30 min walk</span></div>
+          <div class="shelter-cap"><span class="cap-dot" style="background:var(--success);"></span><span style="color:var(--success);" data-i18n="accepting">Accepting</span></div>
+        </div>
+        <div class="dir-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></div>
+      </div>
+      <div class="shelter-mini">
+        <div class="shelter-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg></div>
+        <div class="shelter-info">
+          <div class="n">Barpeta District School</div>
+          <div class="d">3.6 km · <span data-i18n="walk3">45 min walk</span></div>
+          <div class="shelter-cap"><span class="cap-dot" style="background:var(--sos);"></span><span style="color:var(--sos);" data-i18n="full">Full</span></div>
+        </div>
+        <div class="dir-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></div>
+      </div>
+      <div style="height:20px;"></div>
+    </div>
+
+    <!-- ALERTS -->
+    <div class="screen" id="scr-alerts">
+      <div class="top-header">
+        <div style="font-family:var(--font-display); font-weight:600; font-size:19px; color:var(--ink);" data-i18n="floodAlerts">Flood Alerts</div>
+        <div style="width:36px;"></div>
+      </div>
+      <div class="alert-mini crit">
+        <div class="h" data-i18n="alert1h">River gauge crossed danger mark</div>
+        <div class="b" data-i18n="alert1b">Neamatighat station, +1.4m — evacuate low-lying areas now</div>
+        <div class="tm">10 min ago</div>
+      </div>
+      <div class="alert-mini crit">
+        <div class="h" data-i18n="alert3h">Embankment breach reported</div>
+        <div class="b" data-i18n="alert3b">Near Sarthebari — avoid the area, use marked evacuation routes</div>
+        <div class="tm">35 min ago</div>
+      </div>
+      <div class="alert-mini">
+        <div class="h" data-i18n="alert2h">Heavy rain expected tonight</div>
+        <div class="b" data-i18n="alert2b">IMD forecasts continued rainfall over the next 24 hours</div>
+        <div class="tm">1 hr ago</div>
+      </div>
+      <div class="alert-mini">
+        <div class="h" data-i18n="alert4h">Relief camp opened</div>
+        <div class="b" data-i18n="alert4b">Sarthebari Community Hall now accepting displaced families</div>
+        <div class="tm">3 hr ago</div>
+      </div>
+      <div style="height:20px;"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="screen" id="scr-profile">
+      <div class="top-header">
+        <div class="back-btn" onclick="goto('scr-home')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+        <div style="font-family:var(--font-display); font-weight:600; font-size:15px;" data-i18n="profile">Profile</div>
+        <div style="width:36px;"></div>
+      </div>
+      <div class="profile-head">
+        <div class="profile-avatar" id="profAvatar">R</div>
+        <div class="profile-name" id="profName">Rupam Das</div>
+        <div class="profile-phone" id="profPhone">+91 98765 43210</div>
+      </div>
+
+      <div class="section-title" data-i18n="emergencyContacts">Emergency contacts</div>
+      <div class="list-item" style="cursor:default; display:block;">
+        <div class="contact-row"><span class="cn">Mridul Das</span><span class="cp">+91 90000 11122</span></div>
+        <div class="contact-row"><span class="cn">Priya Das</span><span class="cp">+91 90000 33344</span></div>
+      </div>
+
+      <div class="section-title" data-i18n="settings">Settings</div>
+      <div class="list-item" onclick="goto('scr-lang')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg>
+        <span class="lt" data-i18n="language">Language</span>
+        <span class="lv" id="currentLangLabel">English</span>
+      </div>
+      <div class="list-item" style="cursor:default;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h.01M2 10h20"/></svg>
+        <span class="lt" data-i18n="offlineModeSetting">Offline SMS fallback</span>
+        <span class="lv" style="color:var(--success);" data-i18n="enabled">Enabled</span>
+      </div>
+      <div class="list-item" style="cursor:default;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <span class="lt" data-i18n="gpsAccessSetting">Location access</span>
+        <span class="lv" style="color:var(--success);" id="gpsSettingLabel" data-i18n="enabled">Enabled</span>
+      </div>
+      <div class="list-item" onclick="logout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--sos)" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        <span class="lt" style="color:var(--sos);" data-i18n="logout">Log out</span>
+      </div>
+      <div style="height:20px;"></div>
+    </div>
+
+  </div>
+
+  <!-- AI Flood Safety Assistant -->
+  <div class="chat-fab" id="chatFab" onclick="openChat()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+    <div class="spark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.5 6.5L20 10l-6.5 1.5L12 18l-1.5-6.5L4 10l6.5-1.5z"/></svg></div>
+  </div>
+
+  <div class="chat-overlay" id="chatOverlay">
+    <div class="chat-panel">
+      <div class="chat-header">
+        <div class="chat-header-left">
+          <div class="chat-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></div>
+          <div class="chat-header-title" data-i18n="chatTitle">Flood Safety Assistant</div>
+        </div>
+        <div class="chat-close" onclick="closeChat()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
+      </div>
+      <div class="chat-disclaimer" data-i18n="chatDisclaimer">For emergencies, use the SOS button below. This assistant gives general flood-safety guidance only.</div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-quick" id="chatQuick">
+        <div class="chat-chip" onclick="sendQuick(1)" data-i18n="chatQuick1">What should I do if water is rising?</div>
+        <div class="chat-chip" onclick="sendQuick(2)" data-i18n="chatQuick2">How does the SOS button work?</div>
+        <div class="chat-chip" onclick="sendQuick(3)" data-i18n="chatQuick3">What should I pack in an emergency kit?</div>
+      </div>
+      <div class="chat-input-row">
+        <input class="chat-input" id="chatInput" data-i18n-placeholder="chatPlaceholder" placeholder="Ask about flood safety…" onkeydown="if(event.key==='Enter') sendChat();">
+        <button class="chat-send" id="chatSendBtn" onclick="sendChat()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottomnav" id="bottomnav" style="display:none;">
+    <div class="nav-btn active" data-nav="scr-home" onclick="navTab(this,'scr-home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>
+      <span data-i18n="navHome">Home</span>
+    </div>
+    <div class="nav-btn" data-nav="scr-reports" onclick="navTab(this,'scr-reports')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M7.8 3h8.4a2 2 0 012 2v14a2 2 0 01-2 2H7.8a2 2 0 01-2-2V5a2 2 0 012-2z"/></svg>
+      <span data-i18n="navReports">Reports</span>
+    </div>
+    <div class="nav-sos" onclick="goto('scr-sos-1')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 9v4m0 4h.01M10.3 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.7 3.86a2 2 0 00-3.4 0z"/></svg>
+    </div>
+    <div class="nav-btn" data-nav="scr-shelters" onclick="navTab(this,'scr-shelters')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg>
+      <span data-i18n="navShelters">Shelters</span>
+    </div>
+    <div class="nav-btn" data-nav="scr-alerts" onclick="navTab(this,'scr-alerts')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+      <span data-i18n="navAlerts">Alerts</span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------------- TRANSLATIONS ---------------- */
+const dict = {
+  en:{ changeLaterNote:"You can change this anytime from the top of the app.", login:"Log in to continue", loginSub:"We use your number to verify you and send updates on your report — even if the app can't connect.", phoneLabel:"Phone number", sendOtp:"Send OTP", trustNote:"Your number is only used for verification and rescue coordination. It is never shared publicly.", enterOtp:"Enter OTP", verify:"Verify & continue", resend:"Resend code", greeting:"Good evening,", riskCritical:"Critical flood risk in your area", riskSub:"Barpeta district · river 1.2m above danger mark", needHelp:"I need help", tapHold:"Tap to send your GPS location to rescue teams instantly", nearestShelter:"Nearest shelter", activeReport:"Active report", alertsHeading:"Alerts near you", alert1h:"River gauge crossed danger mark", alert1b:"Neamatighat station, +1.4m — evacuate low-lying areas now", alert2h:"Heavy rain expected tonight", alert2b:"IMD forecasts continued rainfall over the next 24 hours", alert3h:"Embankment breach reported", alert3b:"Near Sarthebari — avoid the area, use marked evacuation routes", alert4h:"Relief camp opened", alert4b:"Sarthebari Community Hall now accepting displaced families", sendSos:"Send SOS", whatsHappening:"What's happening?", sitWater:"Trapped by water", sitEvac:"Need evacuation", sitInjured:"Injured", sitSupplies:"Need supplies", noteLabel:"Add a note (optional)", confirmSend:"Confirm & send SOS", offlineNoteText:"No internet connection detected. Your SOS will be sent automatically by SMS to the nearest tower, including your GPS coordinates.", sosSentTitle:"Your SOS has been sent", sosSentSub:"Rescue command has received your location. You'll get updates here as your report is verified and a team is assigned.", trackStatus:"Track status", backHome:"Back to home", myReports:"My Reports", justNow:"Just now", statusSent:"SENT", statusResolved:"RESOLVED", tlSent:"Sent", tlReceived:"Received", tlVerified:"Verified", tlDispatched:"Team sent", tlResolved:"Resolved", nearbyShelters:"Nearby Shelters", walk:"22 min walk", walk2:"30 min walk", walk3:"45 min walk", nearFull:"Near capacity", accepting:"Accepting", full:"Full", floodAlerts:"Flood Alerts", profile:"Profile", emergencyContacts:"Emergency contacts", settings:"Settings", language:"Language", offlineModeSetting:"Offline SMS fallback", gpsAccessSetting:"Location access", enabled:"Enabled", logout:"Log out", navHome:"Home", navReports:"Reports", navShelters:"Shelters", navAlerts:"Alerts", locating:"Finding your location…", gpsUnsupported:"GPS not supported on this device", locationDenied:"Location access denied — tap to try again", tryAgain:"Try again", locFoundGeneric:"GPS location captured", chatTitle:"Flood Safety Assistant", chatDisclaimer:"For emergencies, use the SOS button below. This assistant gives general flood-safety guidance only.", chatWelcome:"Hi, I'm here to help with flood safety, shelters, and using this app. What do you need?", chatPlaceholder:"Ask about flood safety…", chatQuick1:"What should I do if water is rising?", chatQuick2:"How does the SOS button work?", chatQuick3:"What should I pack in an emergency kit?", chatSending:"Thinking…", chatError:"Couldn't connect. If this is an emergency, use the SOS button." },
+  hi:{ changeLaterNote:"आप इसे कभी भी ऐप के ऊपर से बदल सकते हैं।", login:"जारी रखने के लिए लॉगिन करें", loginSub:"हम आपकी पहचान और रिपोर्ट पर अपडेट भेजने के लिए आपके नंबर का उपयोग करते हैं — भले ही इंटरनेट न हो।", phoneLabel:"फ़ोन नंबर", sendOtp:"ओटीपी भेजें", trustNote:"आपका नंबर केवल सत्यापन और बचाव समन्वय के लिए उपयोग होता है। इसे सार्वजनिक नहीं किया जाता।", enterOtp:"ओटीपी दर्ज करें", verify:"सत्यापित करें और जारी रखें", resend:"कोड फिर से भेजें", greeting:"शुभ संध्या,", riskCritical:"आपके क्षेत्र में गंभीर बाढ़ का खतरा", riskSub:"बारपेटा जिला · नदी खतरे के निशान से 1.2 मीटर ऊपर", needHelp:"मुझे मदद चाहिए", tapHold:"बचाव दल को तुरंत अपना जीपीएस स्थान भेजने के लिए टैप करें", nearestShelter:"नज़दीकी आश्रय स्थल", activeReport:"सक्रिय रिपोर्ट", alertsHeading:"आपके पास चेतावनियाँ", alert1h:"नदी गेज खतरे के निशान से ऊपर", alert1b:"नेमातीघाट स्टेशन, +1.4मी — निचले इलाकों को अभी खाली करें", alert2h:"आज रात भारी बारिश की आशंका", alert2b:"आईएमडी ने अगले 24 घंटों में लगातार बारिश का अनुमान लगाया है", alert3h:"तटबंध टूटने की सूचना", alert3b:"सार्थेबाड़ी के पास — क्षेत्र से बचें, चिह्नित निकासी मार्ग का उपयोग करें", alert4h:"राहत शिविर खोला गया", alert4b:"सार्थेबाड़ी सामुदायिक भवन अब विस्थापित परिवारों को स्वीकार कर रहा है", sendSos:"एसओएस भेजें", whatsHappening:"क्या हो रहा है?", sitWater:"पानी में फंसे", sitEvac:"निकासी चाहिए", sitInjured:"घायल", sitSupplies:"सामान चाहिए", noteLabel:"नोट जोड़ें (वैकल्पिक)", confirmSend:"पुष्टि करें और एसओएस भेजें", offlineNoteText:"कोई इंटरनेट कनेक्शन नहीं मिला। आपका एसओएस अपने आप नज़दीकी टावर से एसएमएस द्वारा भेजा जाएगा, आपके जीपीएस निर्देशांक के साथ।", sosSentTitle:"आपका एसओएस भेज दिया गया है", sosSentSub:"बचाव कमांड को आपका स्थान मिल गया है। रिपोर्ट सत्यापित होने और टीम भेजे जाने पर आपको यहाँ अपडेट मिलेंगे।", trackStatus:"स्थिति देखें", backHome:"होम पर वापस जाएं", myReports:"मेरी रिपोर्ट", justNow:"अभी अभी", statusSent:"भेजा गया", statusResolved:"हल हो गया", tlSent:"भेजा गया", tlReceived:"प्राप्त हुआ", tlVerified:"सत्यापित", tlDispatched:"टीम रवाना", tlResolved:"हल हो गया", nearbyShelters:"नज़दीकी आश्रय स्थल", walk:"22 मिनट पैदल", walk2:"30 मिनट पैदल", walk3:"45 मिनट पैदल", nearFull:"लगभग भरा", accepting:"स्वीकार कर रहा है", full:"भरा हुआ", floodAlerts:"बाढ़ चेतावनी", profile:"प्रोफ़ाइल", emergencyContacts:"आपातकालीन संपर्क", settings:"सेटिंग्स", language:"भाषा", offlineModeSetting:"ऑफ़लाइन एसएमएस फ़ॉलबैक", gpsAccessSetting:"स्थान पहुंच", enabled:"सक्षम", logout:"लॉग आउट", navHome:"होम", navReports:"रिपोर्ट", navShelters:"आश्रय", navAlerts:"चेतावनी", locating:"आपका स्थान खोजा जा रहा है…", gpsUnsupported:"इस डिवाइस पर जीपीएस समर्थित नहीं है", locationDenied:"स्थान की अनुमति नहीं मिली — फिर से प्रयास करने के लिए टैप करें", tryAgain:"फिर कोशिश करें", locFoundGeneric:"जीपीएस स्थान प्राप्त हुआ", chatTitle:"बाढ़ सुरक्षा सहायक", chatDisclaimer:"आपातकाल में नीचे दिए गए एसओएस बटन का उपयोग करें। यह सहायक केवल सामान्य बाढ़-सुरक्षा मार्गदर्शन देता है।", chatWelcome:"नमस्ते, मैं बाढ़ सुरक्षा, आश्रय स्थलों और इस ऐप के उपयोग में मदद के लिए यहाँ हूँ। आपको क्या चाहिए?", chatPlaceholder:"बाढ़ सुरक्षा के बारे में पूछें…", chatQuick1:"अगर पानी बढ़ रहा हो तो मुझे क्या करना चाहिए?", chatQuick2:"एसओएस बटन कैसे काम करता है?", chatQuick3:"आपातकालीन किट में क्या रखना चाहिए?", chatSending:"सोच रहा हूँ…", chatError:"कनेक्ट नहीं हो सका। अगर यह आपातकाल है, तो एसओएस बटन का उपयोग करें।" },
+  bn:{ changeLaterNote:"আপনি এটি অ্যাপের উপরের অংশ থেকে যেকোনো সময় পরিবর্তন করতে পারেন।", login:"চালিয়ে যেতে লগইন করুন", loginSub:"আপনাকে যাচাই করতে ও রিপোর্টের আপডেট পাঠাতে আমরা আপনার নম্বর ব্যবহার করি — ইন্টারনেট না থাকলেও।", phoneLabel:"ফোন নম্বর", sendOtp:"ওটিপি পাঠান", trustNote:"আপনার নম্বর শুধু যাচাই এবং উদ্ধার সমন্বয়ের জন্য ব্যবহৃত হয়। এটি কখনও প্রকাশ্যে শেয়ার করা হয় না।", enterOtp:"ওটিপি লিখুন", verify:"যাচাই করুন ও চালিয়ে যান", resend:"কোড আবার পাঠান", greeting:"শুভ সন্ধ্যা,", riskCritical:"আপনার এলাকায় গুরুতর বন্যার ঝুঁকি", riskSub:"বরপেটা জেলা · নদী বিপদসীমার 1.2 মিটার উপরে", needHelp:"আমার সাহায্য দরকার", tapHold:"উদ্ধারকারী দলকে সাথে সাথে আপনার জিপিএস অবস্থান পাঠাতে ট্যাপ করুন", nearestShelter:"নিকটতম আশ্রয়কেন্দ্র", activeReport:"সক্রিয় রিপোর্ট", alertsHeading:"আপনার কাছে সতর্কতা", alert1h:"নদীর গেজ বিপদসীমা অতিক্রম করেছে", alert1b:"নেমাতিঘাট স্টেশন, +1.4মি — নিচু এলাকা এখনই খালি করুন", alert2h:"আজ রাতে ভারী বৃষ্টির সম্ভাবনা", alert2b:"আইএমডি পরবর্তী 24 ঘণ্টা ধরে বৃষ্টির পূর্বাভাস দিয়েছে", alert3h:"বাঁধ ভাঙার খবর", alert3b:"সার্থেবাড়ির কাছে — এলাকাটি এড়িয়ে চলুন, চিহ্নিত পথ ব্যবহার করুন", alert4h:"ত্রাণ শিবির খোলা হয়েছে", alert4b:"সার্থেবাড়ি কমিউনিটি হল এখন বাস্তুচ্যুত পরিবারদের গ্রহণ করছে", sendSos:"এসওএস পাঠান", whatsHappening:"কী ঘটছে?", sitWater:"পানিতে আটকে", sitEvac:"সরিয়ে নেওয়া দরকার", sitInjured:"আহত", sitSupplies:"সরবরাহ দরকার", noteLabel:"নোট যোগ করুন (ঐচ্ছিক)", confirmSend:"নিশ্চিত করুন ও এসওএস পাঠান", offlineNoteText:"কোনো ইন্টারনেট সংযোগ পাওয়া যায়নি। আপনার এসওএস স্বয়ংক্রিয়ভাবে নিকটতম টাওয়ারে এসএমএস দিয়ে পাঠানো হবে, আপনার জিপিএস স্থানাঙ্ক সহ।", sosSentTitle:"আপনার এসওএস পাঠানো হয়েছে", sosSentSub:"উদ্ধার কমান্ড আপনার অবস্থান পেয়েছে। রিপোর্ট যাচাই ও দল পাঠানো হলে আপনি এখানে আপডেট পাবেন।", trackStatus:"অবস্থা দেখুন", backHome:"হোমে ফিরে যান", myReports:"আমার রিপোর্ট", justNow:"এইমাত্র", statusSent:"পাঠানো হয়েছে", statusResolved:"সমাধান হয়েছে", tlSent:"পাঠানো হয়েছে", tlReceived:"গৃহীত হয়েছে", tlVerified:"যাচাই করা হয়েছে", tlDispatched:"দল পাঠানো হয়েছে", tlResolved:"সমাধান হয়েছে", nearbyShelters:"কাছাকাছি আশ্রয়কেন্দ্র", walk:"22 মিনিট হাঁটা", walk2:"30 মিনিট হাঁটা", walk3:"45 মিনিট হাঁটা", nearFull:"প্রায় পূর্ণ", accepting:"গ্রহণ করছে", full:"পূর্ণ", floodAlerts:"বন্যা সতর্কতা", profile:"প্রোফাইল", emergencyContacts:"জরুরি যোগাযোগ", settings:"সেটিংস", language:"ভাষা", offlineModeSetting:"অফলাইন এসএমএস ফলব্যাক", gpsAccessSetting:"অবস্থান অ্যাক্সেস", enabled:"সক্রিয়", logout:"লগ আউট", navHome:"হোম", navReports:"রিপোর্ট", navShelters:"আশ্রয়", navAlerts:"সতর্কতা", locating:"আপনার অবস্থান খোঁজা হচ্ছে…", gpsUnsupported:"এই ডিভাইসে জিপিএস সমর্থিত নয়", locationDenied:"অবস্থানের অনুমতি পাওয়া যায়নি — আবার চেষ্টা করতে ট্যাপ করুন", tryAgain:"আবার চেষ্টা করুন", locFoundGeneric:"জিপিএস অবস্থান পাওয়া গেছে", chatTitle:"বন্যা সুরক্ষা সহায়ক", chatDisclaimer:"জরুরি অবস্থায় নিচের এসওএস বোতাম ব্যবহার করুন। এই সহায়ক শুধু সাধারণ বন্যা-সুরক্ষা নির্দেশনা দেয়।", chatWelcome:"হ্যালো, আমি বন্যা সুরক্ষা, আশ্রয়কেন্দ্র এবং এই অ্যাপ ব্যবহারে সাহায্য করতে এখানে আছি। আপনার কী দরকার?", chatPlaceholder:"বন্যা সুরক্ষা সম্পর্কে জিজ্ঞাসা করুন…", chatQuick1:"পানি বাড়তে থাকলে আমার কী করা উচিত?", chatQuick2:"এসওএস বোতাম কীভাবে কাজ করে?", chatQuick3:"জরুরি কিটে কী রাখা উচিত?", chatSending:"ভাবছি…", chatError:"সংযোগ করা যায়নি। এটি জরুরি হলে, এসওএস বোতাম ব্যবহার করুন।" },
+  as:{ changeLaterNote:"আপুনি এইটো এপ্‌টোৰ ওপৰৰ পৰা যিকোনো সময়তে সলনি কৰিব পাৰে।", login:"অব্যাহত ৰাখিবলৈ লগইন কৰক", loginSub:"আপোনাক সত্যাপন কৰিবলৈ আৰু প্ৰতিবেদনৰ আপডেট পঠিয়াবলৈ আমি আপোনাৰ নম্বৰ ব্যৱহাৰ কৰোঁ — ইণ্টাৰনেট নাথাকিলেও।", phoneLabel:"ফোন নম্বৰ", sendOtp:"ওটিপি পঠিয়াওক", trustNote:"আপোনাৰ নম্বৰ কেৱল সত্যাপন আৰু উদ্ধাৰ সমন্বয়ৰ বাবে ব্যৱহাৰ কৰা হয়। এইটো সাৰ্বজনীনভাৱে শ্বেয়াৰ কৰা নহয়।", enterOtp:"ওটিপি লিখক", verify:"সত্যাপন কৰক আৰু আগবাঢ়ক", resend:"কোড পুনৰ পঠিয়াওক", greeting:"শুভ সন্ধিয়া,", riskCritical:"আপোনাৰ অঞ্চলত গুৰুতৰ বান বিপদ", riskSub:"বৰপেটা জিলা · নদী বিপদসীমাৰ 1.2 মিটাৰ ওপৰত", needHelp:"মোক সহায় লাগে", tapHold:"উদ্ধাৰকাৰী দললৈ তৎক্ষণাৎ আপোনাৰ জিপিএছ অৱস্থান পঠিয়াবলৈ টিপক", nearestShelter:"ওচৰৰ আশ্ৰয় কেন্দ্ৰ", activeReport:"সক্ৰিয় প্ৰতিবেদন", alertsHeading:"আপোনাৰ ওচৰৰ সতৰ্কবাণী", alert1h:"নদীৰ গেজ বিপদসীমা অতিক্ৰম কৰিলে", alert1b:"নেমাতিঘাট ষ্টেচন, +1.4মি — নিম্নভূমি অঞ্চল এতিয়াই খালী কৰক", alert2h:"আজি ৰাতি প্ৰবল বৰষুণৰ আশংকা", alert2b:"আইএমডিয়ে পৰৱৰ্তী 24 ঘণ্টাত অবিৰত বৰষুণৰ পূৰ্বাভাস দিছে", alert3h:"বান্ধ ভঙাৰ খবৰ", alert3b:"সাৰ্থেবাৰীৰ ওচৰত — অঞ্চলটো পৰিহাৰ কৰক, চিহ্নিত পথ ব্যৱহাৰ কৰক", alert4h:"সাহায্য শিবিৰ মুকলি কৰা হ'ল", alert4b:"সাৰ্থেবাৰী সামুদায়িক ভৱনে এতিয়া বাস্তুচ্যুত পৰিয়ালক গ্ৰহণ কৰি আছে", sendSos:"এছঅ'এছ পঠিয়াওক", whatsHappening:"কি হৈ আছে?", sitWater:"পানীত আবদ্ধ", sitEvac:"উলিয়াই অনা লাগে", sitInjured:"আহত", sitSupplies:"সামগ্ৰী লাগে", noteLabel:"টোকা যোগ কৰক (বৈকল্পিক)", confirmSend:"নিশ্চিত কৰক আৰু এছঅ'এছ পঠিয়াওক", offlineNoteText:"কোনো ইণ্টাৰনেট সংযোগ পোৱা নগ'ল। আপোনাৰ এছঅ'এছ স্বয়ংক্ৰিয়ভাৱে ওচৰৰ টাৱাৰলৈ এছএমএছৰ যোগেদি পঠিওৱা হ'ব, আপোনাৰ জিপিএছ স্থানাংকসহ।", sosSentTitle:"আপোনাৰ এছঅ'এছ পঠিওৱা হ'ল", sosSentSub:"উদ্ধাৰ কমাণ্ডে আপোনাৰ অৱস্থান পাইছে। প্ৰতিবেদন সত্যাপিত হোৱাৰ আৰু দল পঠোৱাৰ সময়ত আপুনি ইয়াত আপডেট পাব।", trackStatus:"স্থিতি চাওক", backHome:"ঘৰলৈ ঘূৰি যাওক", myReports:"মোৰ প্ৰতিবেদন", justNow:"এইমাত্ৰ", statusSent:"পঠিওৱা হ'ল", statusResolved:"সমাধান হ'ল", tlSent:"পঠিওৱা হ'ল", tlReceived:"গ্ৰহণ কৰা হ'ল", tlVerified:"সত্যাপিত", tlDispatched:"দল পঠিওৱা হ'ল", tlResolved:"সমাধান হ'ল", nearbyShelters:"ওচৰৰ আশ্ৰয় কেন্দ্ৰ", walk:"22 মিনিট খোজ", walk2:"30 মিনিট খোজ", walk3:"45 মিনিট খোজ", nearFull:"প্ৰায় পূৰ্ণ", accepting:"গ্ৰহণ কৰি আছে", full:"পূৰ্ণ", floodAlerts:"বান সতৰ্কবাণী", profile:"প্ৰ'ফাইল", emergencyContacts:"জৰুৰীকালীন সম্পৰ্ক", settings:"ছেটিংছ", language:"ভাষা", offlineModeSetting:"অফলাইন এছএমএছ ফলবেক", gpsAccessSetting:"অৱস্থান প্ৰৱেশাধিকাৰ", enabled:"সক্ষম", logout:"লগ আউট", navHome:"ঘৰ", navReports:"প্ৰতিবেদন", navShelters:"আশ্ৰয়", navAlerts:"সতৰ্কবাণী", locating:"আপোনাৰ অৱস্থান বিচাৰি থকা হৈছে…", gpsUnsupported:"এই ডিভাইচত জিপিএছ সমৰ্থিত নহয়", locationDenied:"অৱস্থানৰ অনুমতি পোৱা নগ'ল — পুনৰ চেষ্টা কৰিবলৈ টিপক", tryAgain:"পুনৰ চেষ্টা কৰক", locFoundGeneric:"জিপিএছ অৱস্থান পোৱা গ'ল", chatTitle:"বান সুৰক্ষা সহায়ক", chatDisclaimer:"জৰুৰীকালীন অৱস্থাত তলৰ এছঅ'এছ বুটাম ব্যৱহাৰ কৰক। এই সহায়কে কেৱল সাধাৰণ বান-সুৰক্ষা নিৰ্দেশনা দিয়ে।", chatWelcome:"নমস্কাৰ, মই বান সুৰক্ষা, আশ্ৰয় কেন্দ্ৰ আৰু এই এপ্‌টো ব্যৱহাৰ কৰাত সহায় কৰিবলৈ ইয়াত আছোঁ। আপোনাক কি লাগে?", chatPlaceholder:"বান সুৰক্ষাৰ বিষয়ে সোধক…", chatQuick1:"পানী বৃদ্ধি হৈ থাকিলে মই কি কৰিব লাগে?", chatQuick2:"এছঅ'এছ বুটামে কেনেকৈ কাম কৰে?", chatQuick3:"জৰুৰীকালীন কিটত কি ৰাখিব লাগে?", chatSending:"চিন্তা কৰি আছোঁ…", chatError:"সংযোগ কৰিব পৰা নগ'ল। যদি এইটো জৰুৰীকালীন, এছঅ'এছ বুটাম ব্যৱহাৰ কৰক।" }
+};
+const langNames = { en:'English', as:'অসমীয়া', bn:'বাংলা', hi:'हिन्दी' };
+const langCodes = { en:'EN', as:'AS', bn:'BN', hi:'HI' };
+let currentLang = 'en';
+
+function t(key){ return dict[currentLang][key] || dict.en[key] || key; }
+
+function applyI18n(){
+  const d = dict[currentLang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if(d[key]) el.textContent = d[key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if(d[key]) el.placeholder = d[key];
+  });
+  document.body.className = 'lang-' + currentLang;
+  const label = document.getElementById('currentLangLabel');
+  if(label) label.textContent = langNames[currentLang];
+  document.getElementById('langPillText').textContent = langCodes[currentLang];
+  refreshLocationText();
+}
+function setLang(l){
+  currentLang = l;
+  applyI18n();
+  goto('scr-phone');
+}
+function quickSetLang(l){
+  currentLang = l;
+  applyI18n();
+  document.getElementById('langMenu').classList.remove('open');
+}
+function toggleLangMenu(){
+  document.getElementById('langMenu').classList.toggle('open');
+}
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('langMenu');
+  const pill = e.target.closest('.lang-pill');
+  const inMenu = e.target.closest('.lang-menu');
+  if(!pill && !inMenu) menu.classList.remove('open');
+});
+
+/* ---------------- SCREEN NAV ---------------- */
+function goto(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const navScreens = ['scr-home','scr-reports','scr-shelters','scr-alerts'];
+  const showNav = navScreens.includes(id);
+  document.getElementById('bottomnav').style.display = showNav ? 'flex' : 'none';
+  document.getElementById('chatFab').style.display = showNav ? 'flex' : 'none';
+  closeChat();
+  if(showNav){
+    document.querySelectorAll('.nav-btn').forEach(n => n.classList.toggle('active', n.dataset.nav === id));
+  }
+  document.querySelector('.screens').scrollTop = 0;
+  if(id === 'scr-sos-1') initSosLocation();
+}
+function navTab(el, id){ goto(id); }
+
+/* ---------------- LOGIN FLOW ---------------- */
+function startOtp(){
+  const num = document.getElementById('phoneInput').value || '98765 43210';
+  document.getElementById('otpSentTo').textContent = 'Code sent to +91 ' + num;
+  setTimeout(() => { const first = document.querySelector('#scr-otp .otp-box'); if(first) first.focus(); }, 300);
+}
+document.querySelectorAll('.otp-box').forEach((box, i, arr) => {
+  box.addEventListener('input', () => {
+    box.value = box.value.replace(/[^0-9]/g,'');
+    if(box.value && arr[i+1]) arr[i+1].focus();
+  });
+  box.addEventListener('keydown', e => {
+    if(e.key === 'Backspace' && !box.value && arr[i-1]) arr[i-1].focus();
+  });
+});
+function verifyOtp(){
+  const phone = document.getElementById('phoneInput').value || '98765 43210';
+  document.getElementById('profPhone').textContent = '+91 ' + phone;
+  goto('scr-home');
+  document.getElementById('bottomnav').style.display = 'flex';
+  document.getElementById('chatFab').style.display = 'flex';
+}
+function logout(){
+  goto('scr-lang');
+}
+
+/* ---------------- SOS FLOW ---------------- */
+function selectSituation(el){
+  document.querySelectorAll('.sit-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function sendSosNow(){
+  const label = document.getElementById('locStatus').textContent;
+  document.getElementById('newReportLoc').textContent = label && label !== t('locating') ? label : t('locFoundGeneric');
+  document.getElementById('newReportCard').style.display = 'block';
+  goto('scr-sos-confirm');
+}
+
+/* ---------------- GPS INTEGRATION ---------------- */
+const knownPlaces = [
+  { name:'Guwahati, Kamrup',   lat:26.1445, lng:91.7362 },
+  { name:'Barpeta Town, Barpeta', lat:26.3229, lng:91.0060 },
+  { name:'Sarthebari, Barpeta', lat:26.3946, lng:91.2599 },
+  { name:'Majuli', lat:26.9500, lng:94.1700 },
+  { name:'Dhemaji Town, Dhemaji', lat:27.4833, lng:94.5667 },
+  { name:'Silchar, Cachar', lat:24.8333, lng:92.7789 },
+  { name:'Dibrugarh Town, Dibrugarh', lat:27.4728, lng:94.9120 },
+  { name:'Jorhat Town, Jorhat', lat:26.7509, lng:94.2037 },
+];
+function haversine(lat1, lng1, lat2, lng2){
+  const R = 6371;
+  const dLat = (lat2-lat1) * Math.PI/180;
+  const dLng = (lng2-lng1) * Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+function nearestPlaceLabel(lat, lng){
+  let best = null, bestDist = Infinity;
+  knownPlaces.forEach(p => {
+    const d = haversine(lat, lng, p.lat, p.lng);
+    if(d < bestDist){ bestDist = d; best = p; }
+  });
+  if(best && bestDist < 60){
+    if(currentLang === 'en') return `Near ${best.name}`;
+    if(currentLang === 'hi') return `${best.name} के पास`;
+    if(currentLang === 'bn') return `${best.name} এর কাছে`;
+    if(currentLang === 'as') return `${best.name}ৰ ওচৰত`;
+  }
+  return t('locFoundGeneric');
+}
+let lastCoords = null;
+function initSosLocation(){
+  const statusEl = document.getElementById('locStatus');
+  const coordEl = document.getElementById('locCoords');
+  const pinWrap = document.getElementById('locPinWrap');
+  pinWrap.classList.remove('error');
+  pinWrap.classList.add('loading');
+  statusEl.textContent = t('locating');
+  coordEl.textContent = '';
+  if(!navigator.geolocation){
+    pinWrap.classList.remove('loading');
+    pinWrap.classList.add('error');
+    statusEl.textContent = t('gpsUnsupported');
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(pos => {
+    const { latitude, longitude, accuracy } = pos.coords;
+    lastCoords = { latitude, longitude, accuracy };
+    pinWrap.classList.remove('loading','error');
+    statusEl.textContent = nearestPlaceLabel(latitude, longitude);
+    coordEl.textContent = `${latitude.toFixed(4)}°N, ${longitude.toFixed(4)}°E · ±${Math.round(accuracy)}m`;
+  }, err => {
+    pinWrap.classList.remove('loading');
+    pinWrap.classList.add('error');
+    statusEl.textContent = t('locationDenied');
+    coordEl.innerHTML = `<span class="retry-link" onclick="initSosLocation()">${t('tryAgain')}</span>`;
+  }, { enableHighAccuracy:true, timeout:8000, maximumAge:0 });
+}
+function refreshLocationText(){
+  const statusEl = document.getElementById('locStatus');
+  if(!statusEl) return;
+  const pinWrap = document.getElementById('locPinWrap');
+  if(pinWrap.classList.contains('loading')){ statusEl.textContent = t('locating'); return; }
+  if(pinWrap.classList.contains('error')){
+    statusEl.textContent = t('locationDenied');
+    document.getElementById('locCoords').innerHTML = `<span class="retry-link" onclick="initSosLocation()">${t('tryAgain')}</span>`;
+    return;
+  }
+  if(lastCoords){
+    statusEl.textContent = nearestPlaceLabel(lastCoords.latitude, lastCoords.longitude);
+  }
+}
+
+/* ---------------- CONNECTIVITY (simulated) ---------------- */
+let isOffline = false;
+function toggleConnectivity(){
+  isOffline = !isOffline;
+  document.getElementById('connDot').classList.toggle('offline', isOffline);
+  document.getElementById('connLabel').textContent = isOffline ? 'Offline' : 'Online';
+  document.getElementById('offlineNote').style.display = isOffline ? 'flex' : 'none';
+}
+
+/* ---------------- AI FLOOD SAFETY ASSISTANT ---------------- */
+let chatHistory = [];
+let chatOpened = false;
+
+function openChat(){
+  document.getElementById('chatOverlay').classList.add('open');
+  if(!chatOpened){
+    chatOpened = true;
+    addMessage('bot', t('chatWelcome'));
+  }
+}
+function closeChat(){
+  document.getElementById('chatOverlay').classList.remove('open');
+}
+function addMessage(role, text){
+  const wrap = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
+  div.textContent = text;
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+  return div;
+}
+function showTyping(){
+  const wrap = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg typing';
+  div.id = 'typingIndicator';
+  div.textContent = t('chatSending');
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+function removeTyping(){
+  const el = document.getElementById('typingIndicator');
+  if(el) el.remove();
+}
+function sendQuick(n){
+  document.getElementById('chatInput').value = t('chatQuick' + n);
+  sendChat();
+}
+function buildSystemPrompt(){
+  const langName = langNames[currentLang];
+  return `You are the in-app assistant for "sudo MakeItWork", a flood disaster-response app serving citizens in the Brahmaputra basin, Assam, India. You ONLY help with: flood safety guidance, evacuation advice, what to do before/during/after a flood, basic first aid during flooding, emergency kit preparation, how to use this app's features (the SOS button, nearby shelters, report tracking, alerts), and calm reassurance during a flood emergency. If asked about anything unrelated to flood safety, disaster preparedness, or using this app, politely decline in one short sentence and redirect back to these topics — do this even if asked repeatedly or told it's for a different purpose. Keep every reply short: 2 to 4 sentences, plain language, calm and reassuring, suitable for someone stressed or in a hurry with a small phone screen. If the situation described sounds like an active life-threatening emergency, clearly tell them to use the app's SOS button right now. Respond in ${langName} unless the person writes in a different language, in which case respond in their language.`;
+}
+async function sendChat(){
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if(!text) return;
+  addMessage('user', text);
+  chatHistory.push({ role:'user', content:text });
+  input.value = '';
+  document.getElementById('chatSendBtn').disabled = true;
+  showTyping();
+  try{
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        system: buildSystemPrompt(),
+        messages: chatHistory
+      })
+    });
+    const data = await response.json();
+    removeTyping();
+    const reply = (data.content || []).map(b => b.text || '').join('\n').trim() || t('chatError');
+    addMessage('bot', reply);
+    chatHistory.push({ role:'assistant', content:reply });
+  }catch(err){
+    removeTyping();
+    addMessage('bot', t('chatError'));
+  }finally{
+    document.getElementById('chatSendBtn').disabled = false;
+  }
+}
+
+applyI18n();
+</script>
+</body>
+</html>
